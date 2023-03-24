@@ -45,26 +45,32 @@ debug("Test");
 world = {};
 
 //XXX: TODO Make this prettier!
+//Random colors and size
+//FFFFFF in decimal is 16777215
+///There are 16777215 colors that can be represented by hex numbers
 function drawCircle(context,entity) {
     with(context) {
         beginPath();                
         lineWidth = 3;
         var x = entity["x"];
         var y = entity["y"];
+        var randomColor = Math.floor(Math.random()*16777215).toString(16);
         //moveTo(x,y);
-        fillStyle = entity["colour"];
+        fillStyle = "#"+randomColor;
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        console.log(randomColor)
+        arc(x, y, Math.floor((Math.random()*10)), 0, 2.0 * Math.PI, false);  
+        stroke();                
+        fill()                
     }
 }
 
 function prepEntity(entity) {
     if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+        entity["colour"] = "#FFF400";
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = Math.floor((Math.random()*30)+1);
     }
     return entity;
 }
@@ -72,7 +78,8 @@ function prepEntity(entity) {
 function clearFrame() {
     with(context) {
 	moveTo(0,0);
-	fillStyle = "#000";
+    //this is a seizure
+	fillStyle = "#0"+Math.floor(Math.random()*16777215).toString(16);
 	fillRect(0,0,W,H);
     }
 
@@ -231,7 +238,7 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'#ff00ee'});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
@@ -239,7 +246,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
+    addEntityWithoutName({'x':x,'y':y,'colour':'yellow',
                           'radius':10});
 });
 
@@ -254,6 +261,7 @@ function wsSetup() {
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
+        console.log("Connected to socket")
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
@@ -261,7 +269,14 @@ function wsSetup() {
     socket.onmessage = function(msg) {  
         try {
             debug("WebSocket Recv:" + msg.data);
-            //XXX: TODO What are you going to do here?            
+            //XXX: TODO What are you going to do here? 
+            var recievedData = JSON.parse(msg.data) 
+            //From: CMPUT 404 exercise
+            for(let key in recievedData){
+                clearFrame()
+                world[key]=recievedData[key]
+            }
+            drawFrame()
         } catch (e) {
             alert("socket on message: " + e);
         }
