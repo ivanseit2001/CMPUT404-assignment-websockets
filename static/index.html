@@ -243,17 +243,17 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':Math.floor(Math.random()*16777215).toString(16)
+    addEntityWithoutName({'x':x,'y':y,'colour':"random"
 });
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':Math.floor(Math.random()*16777215).toString(16)
+    addEntityWithoutName({'x':x,'y':y,'colour':"random"
 });
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':Math.floor(Math.random()*16777215).toString(16),
+    addEntityWithoutName({'x':x,'y':y,'colour': "random",
                           'radius':Math.floor((Math.random()*30)+1)});
 });
 
@@ -270,7 +270,7 @@ function wsSetup() {
         //XXX: TODO What are you going to do here?
         console.log("Connected to socket")
         
-        debug("Test3")
+        debug("Welcome to disco")
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
