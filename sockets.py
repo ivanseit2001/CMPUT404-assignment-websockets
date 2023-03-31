@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 import flask
-from flask import Flask, request
+from flask import Flask, request,redirect,Response
 from flask_sockets import Sockets
 import gevent
 from gevent import queue
@@ -79,6 +79,7 @@ myWorld = World()
 clients=list()
 def set_listener( entity, data ):
     ''' do something with the update ! '''
+    send_all_json({entity: data})
 
 myWorld.add_set_listener( set_listener )
         
@@ -93,10 +94,13 @@ def read_ws(ws,client):
     try:
         while True:
             msg=ws.receive()
+            print(f"WS RECV: {msg}")
             if (msg is not None):
                 packet=json.loads(msg)
-                for key,value in packet.items():
-                    myWorld.set(key,value)
+                # if packet.get("clear",False):
+                #     myWorld.clear()
+                # for key,value in packet.items():
+                #     myWorld.set(key,value)
                 send_all_json(packet)
             else:
                 break
@@ -179,4 +183,4 @@ if __name__ == "__main__":
         and run
         gunicorn -k flask_sockets.worker sockets:app
     '''
-    app.run()
+    os.system("bash run.sh")
